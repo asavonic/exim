@@ -1,0 +1,49 @@
+======================================================================
+DEPENDENCIES
+======================================================================
+
+You need the following tools and packages to build Qt5 plugin for
+EXIM, which you can find in a repository of your GNU/Linux
+distribution:
+
+  - qmake-qt5
+  - qt5, qt5-devel
+  - make
+  - gcc
+
+======================================================================
+BUILD INSTRUCTION
+======================================================================
+
+Run `make' command in qt5 directory. After successful build you will
+find a plugin shared library in:
+
+    build/platforminputcontexts/libeximplatforminputcontext.so
+
+======================================================================
+CONFIGURATION
+======================================================================
+
+Set the following environment variables to let Qt5 load the plugin:
+
+  QT_PLUGIN_PATH=$EXIM_ROOT/qt5/build
+  QT_IM_MODULE=exim
+
+======================================================================
+USAGE
+======================================================================
+
+Plugin registers a DBus interface to recieve user input.
+
+  connection: org.freedesktop.Exim.InputContext
+  path: /
+  interface: org.freedesktop.Exim.Interface
+  method: commitText(String text)
+
+You can test that it is working by executing `dbus-send' command:
+
+  dbus-send  --type=method_call                        \
+             --dest=org.freedesktop.Exim.InputContext  \
+             /                                         \
+             org.freedesktop.Exim.Interface.commitText \
+             string:'hello world'
